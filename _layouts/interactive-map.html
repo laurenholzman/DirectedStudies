@@ -557,7 +557,7 @@ layout: default
                         coords = elevationPoints[i].geometry.coordinates;
 
                         //this is the reason the elevation profile is so slow. This was the simplest way to query the elevation that I could find that was free. For this service, you cannot do multiple points at once to my knowledge, causing a huge slow down. I know you can also sample elevation through the mapbox rbg tiles, but I got confused halfway through trying that.
-                        var link2 = `https://epqs.nationalmap.gov/v1/json?x=${coords[0]}&y=${coords[1]}&wkid=4326&units=Feet&includeDate=false`
+                        var link2 = `https://epqs.nationalmap.gov/v1/json?x=${coords[0]}&y=${coords[1]}&wkid=4326&units=Meters&includeDate=false`
                         
                         var elevationData = await fetch(link2, { method: "GET" });
                         elevationData = await elevationData.json();

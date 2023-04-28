@@ -5,12 +5,12 @@
 # yourself editing this file very often, consider using Jekyll's data files
 # feature for the data you need to update frequently.
 #
-url: "https://thehellomartian.github.io/PNT-map2/" # The base hostname & protocol for your site, e.g. http://example.com
-baseurl: "" # The subpath of your site, e.g. /blog
+url: "https://github.com/thehellomartian/DirectedStudies" # The base hostname & protocol for your site, e.g. http://example.com
+baseurl: "/DirectedStudies" # The subpath of your site, e.g. /blog
 indexfolder: "/maps" # The subpath where index .md files are  stored
 title: "Pacfic Northwest National Scenic Trail Map Viewer" # The name of your site, e.g. '[YOUR LIBRARY]'s Map Set Viewer'.
 theme: minima
-repository: "thehellomartian/PNT-map2"
+repository: "thehellomartian/DirectedStudies"
 
 
 plugins:

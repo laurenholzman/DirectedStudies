@@ -1,0 +1,865 @@
+<!DOCTYPE html><head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+    <title></title>
+    <link rel="stylesheet" href="/assets/main.css">
+</head>
+<html lang="en-US">
+
+<body><header class="site-header">
+
+    <div class="wrapper"><a class="site-title" rel="author" href="/">Pacfic Northwest National Scenic Trail Map Viewer</a><nav class="site-nav">
+          <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+          <label for="nav-trigger">
+            <span class="menu-icon">
+              <svg viewBox="0 0 18 15" width="18px" height="15px">
+                <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+              </svg>
+            </span>
+          </label>
+  
+          <div class="trigger"><a class="page-link" href="/about.html">About</a><a class="page-link" href="/tutorial.html">Tutorial</a></div>
+        </nav></div>
+  </header><main class="page-content">
+    <div class="wrapper">
+      <p>
+          <!DOCTYPE html>
+<html>
+<head>
+
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.js"></script>
+    <!-- Import Turf Module - Needed to calculate bounding boxes -->
+    <script src='https://api.mapbox.com/mapbox.js/plugins/turf/v2.0.2/turf.min.js'></script>
+    <meta charset="utf-8" />
+    <title>Draw a polygon and calculate its area</title>
+    <meta name="viewport"
+          content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.7.0/mapbox-gl.css"
+          rel="stylesheet" />
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.7.0/mapbox-gl.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/addons/p5.sound.min.js"></script>
+    <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.js"></script>
+    <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.css"
+          rel="stylesheet" />
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        #map {
+            position: relative;
+            top: 0;
+            bottom: 20%;
+            width: 100%;
+            min-height: 70vh
+            
+        }
+    </style>
+</head>
+<body>
+    <style>
+        p {
+            font-family: 'Open Sans';
+            margin: 0;
+            font-size: 13px;
+        }
+
+        #instructions {
+            position: fixed;
+            margin-top: 120px;
+            margin-left: 10px;
+            width: 220px;
+            top: 0;
+            bottom: 40%;
+            padding: 20px;
+            background-color: #fff;
+            overflow-y: scroll;
+            font-family: sans-serif;
+            border-radius: 3px;
+        }
+
+        #shops {
+            margin-top: 10px;
+            top: 0;
+            right: 0;
+            width: 160px;
+            position: static;
+            background-color: #fff;
+            overflow-y: scroll;
+            font-family: sans-serif;
+            border-radius: 3px;
+        }
+
+        #shopBox {
+            margin-top: 120px;
+            top: 1%;
+            margin-right: 40px;
+            right: 0;
+            width: 180px;
+            padding: 10px;
+            height: 200px;
+            position: fixed;
+            background-color: #fff;
+            font-family: sans-serif;
+            border-radius: 3px;
+        }
+
+        #statsBox {
+            margin-top: 120px;
+            top: 30%;
+            min-height: 20%;
+            margin-right: 40px;
+            right: 0;
+            width: 180px;
+            padding: 10px;
+            
+            position: fixed;
+            background-color: #fff;
+            overflow-y: scroll;
+            font-family: sans-serif;
+            border-radius: 3px;
+        }
+
+        h1 {
+            margin-top: 20px;
+            position: static;
+            font-size: 24px;
+            text-align: center;
+        }
+
+        h2,
+        h3 {
+            margin-top: 10px;
+            position: static;
+            font-size: 18px;
+        }
+
+        .slider {
+            width: 100%
+        }
+
+        #titleBox {
+            position: absolute;
+            margin-top: 10px;
+            margin-left: 10px;
+            width: 260px;
+            top: 0;
+            height: 80px;
+            background-color: #fff;
+            font-family: sans-serif;
+            border-radius: 3px;
+        }
+
+        .geocoder {
+            width: 180px;
+        }
+        .wrapper {
+            max-width: 100%;
+            
+            padding-left: 0px;
+            padding-right: 0px;
+        }
+
+    </style>
+
+    <script src="https://unpkg.com/@turf/turf@6/turf.min.js"></script>
+    
+    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.2.2/mapbox-gl-draw.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
+
+
+    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.min.js"></script>
+    <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.css" type="text/css">
+
+
+    <link rel="stylesheet"
+          href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v1.2.2/mapbox-gl-draw.css"
+          type="text/css" />
+    <div id="map"></div>
+
+    <div id="instructions"><h2>User Point of Interest Form Placeholder </h2></div>
+
+    <div id="shopBox">
+        <h2 font-size="8px" font-family="sans-serif"> Amenity Type: </h2>
+        <select name="fruits" id="shops">
+            <option value="">--select--</option>
+            <option value="Camp Sites">Camp Sites</option>
+            <option value="Coffee Shops">Coffee Shops</option>
+            <option value="Public Washrooms">Public Washrooms</option>
+            <option value="Water Fountains">Water Fountains</option>
+        </select>
+
+        <h2 font-size="8px" font-family="sans-serif"> Radius of Search: </h2>
+        <div class="slidecontainer">
+            <input type="range" min="1" max="1000" value="300" class="slider" id="myRange">
+            <p>Radius: <span id="demo"></span> m</p>
+        </div>
+    </div>
+    <div id="statsBox">
+        <h2>Route Statstics: </h2> <div id="stats"> </div> <div id="elevationStats"> </div><div id="shopsStats">
+        </div>
+    </div>
+    <div style="bottom:0" min-width: 100%>
+        <div class="chart-container" style="position: static; bottom:5%; height:20vh; width:100%">
+            <canvas id="myChart1"></canvas>
+        </div>
+    </div>
+    
+
+
+    <script>
+        //I declare a bunch of global variables here so that I can track their values throughout different functions without taking them as parameters
+        var dataSave = {};
+        var hi;
+        mapboxgl.accessToken = 'pk.eyJ1IjoidGhlaGVsbG9tYXJ0aWFuIiwiYSI6ImNsMDc1NXBuazF6bXczZXJzd2ZseXB4MDgifQ.gQNA94PswehVHrpv6cBBSw';
+        const map = new mapboxgl.Map({
+            container: 'map', // container ID
+            style: 'mapbox://styles/mapbox/satellite-streets-v11', // style URL
+            center: [-120.515257, 48.599069], // starting position [lng, lat]
+            zoom: 6 // starting zoom
+        });
+        var geojsonLine = "no";
+        var pntRoute;
+        var leg = {};
+        var data1 = {};
+        var shopPoints = "no";
+        var radius = 0.3;
+        var myChart = "no";
+        var elevationsAlongLine = [];
+        var graphCoords = [];
+        // var ctx = document.getElementById('myChart1').getContext("2d");
+
+        //initialize interactive html elements
+        document.getElementById("shops").addEventListener("change", changeShopLayer);
+
+        var slider = document.getElementById("myRange");
+        var output = document.getElementById("demo");
+        output.innerHTML = slider.value;
+
+        //I do this multiple times throughout, but I'm only going to comment on it here. In order to alter the map values I just delete them and then remake them with the updated values. This probably is not best practice, and I am not realizing there are probably layer.update methods or something of the sort, but implementing it would be complicated at this stage
+        slider.oninput = async function () {
+            output.innerHTML = this.value;
+
+        }
+        slider.addEventListener("change", function () {
+            radius = slider.value / 1000;
+            if (map.getSource("routeBuffer")) {
+                map.removeLayer("routeBuffer");
+                map.removeSource("routeBuffer")
+            }
+            deleteShopsWithin();
+
+            updatePlot();
+        })
+
+
+        const draw = new MapboxDraw({
+            displayControlsDefault: false,
+            // Select which mapbox-gl-draw control buttons to add to the map.
+            controls: {
+                line_string: true,
+                trash: true
+            },
+            // Set mapbox-gl-draw to draw by default.
+            // The user does not have to click the polygon control button first.
+            defaultMode: 'draw_line_string'
+        });
+
+      
+
+            map.on('load', async function () {
+
+                //  Add the geojson as a map source
+                map.addSource('pntRouteJson', {
+                    type: 'geojson',
+                    data: 'PNToneLine2.geojson',
+                    generateId: true
+
+                });
+              
+                
+                map.addLayer({
+                    'id': 'Base Route',
+                    'type': 'line',
+                    'source': 'pntRouteJson',
+ 
+                    'layout': {},
+                    'paint': {
+                        'line-color': 'white',
+                        'line-width': 2
+                    },
+                });
+                
+             
+                async function getStuff(url) {
+
+                    // Storing response
+                    const response = await fetch(url);
+
+                    // Storing data in form of JSON
+                    var data = await response.json();
+                    console.log(data, "response");
+                    pntRoute = data
+                    return data
+                }
+                filler = await getStuff('PNToneLine2.geojson')
+                pntRoute = pntRoute.features[0]
+                
+                
+              
+
+                
+                console.log(pntRoute, "pntRoute")
+
+
+                    //get elevations. Will save and delete
+
+
+                    
+
+            })
+                 
+        
+
+      
+
+        new mapboxgl.Popup()
+            .setLngLat([-122.327227, 47.681090])
+            .setHTML("</p> Welcome to the interactive Pacific Northwest National Scenic Trail Map. It is still under construction. </p>")
+            .addTo(map);
+
+        map.addControl(draw,);
+        const geocoder = new MapboxGeocoder({
+            accessToken: mapboxgl.accessToken,
+            mapboxgl: mapboxgl,
+            marker: false,
+            collapsed: true, //it was visually unappealing to have the search bar not collapsed, as I could not figure out how to change its size.
+
+        });
+        map.addControl(
+            geocoder);
+
+        map.on('draw.create', onChange);
+        map.on('draw.delete', deleteRoute);
+        map.on('draw.update', onChange);
+
+        async function updateLength(e) {
+            const data = draw.getAll();
+
+
+            dataSave = data;
+
+            if (data.features.length > 0) {
+
+                var str = ``;
+                var coords = data.features[0].geometry.coordinates;
+
+                //collect all coordinates into a string for the directions api
+                for (var i = 0; i < coords.length; i++) {
+                    if (i === 0) { str = str.concat(`${coords[i][0]},${coords[i][1]}`) } else {
+
+                        str = str.concat(`;${coords[i][0]},${coords[i][1]}`)
+                    }
+                }
+
+                // turn the line into a route given by the directions api
+                link = `https://api.mapbox.com/directions/v5/mapbox/walking/`.concat(str, `?steps=true&geometries=geojson&access_token=pk.eyJ1IjoidGhlaGVsbG9tYXJ0aWFuIiwiYSI6ImNsMDc1NXBuazF6bXczZXJzd2ZseXB4MDgifQ.gQNA94PswehVHrpv6cBBSw`);
+
+                const query = await fetch(link, { method: "GET" });
+           
+
+                var sliced = turf.lineSlice(coords[0], coords[coords.length-1], pntRoute);
+               
+
+
+                // testing the new line slicing and adding it to another line. Not robust in deletion and stuff, just for testing
+                
+
+
+                /*
+                const json = await query.json();
+                console.log(json,"json")
+
+                data1 = json.routes[0];
+
+                const route = data1.geometry.coordinates;
+                geojson = {
+                    type: "Feature",
+                    properties: {},
+                    geometry: {
+                        type: "LineString",
+                        coordinates: route
+                    }
+                }
+                */
+                geojson = sliced;
+                geojsonLine = geojson;
+                //leg = data1.legs[0];
+
+
+                //add new route to map
+                // if the route already exists on the map, we"ll reset it using setData
+                if (map.getSource("route")) {
+                    map.getSource("route").setData(geojson);
+                }
+                // otherwise, we"ll make a new request
+                else {
+                    map.addLayer({
+                        id: "route",
+                        type: "line",
+                        source: {
+                            type: "geojson",
+                            data: geojson
+                        },
+                        layout: {
+                            "line-join": "round",
+                            "line-cap": "round"
+                        },
+                        paint: {
+                            "line-color": "blue",
+                            "line-width": 5,
+                            "line-opacity": 0.75
+                        }
+                    });
+
+                }
+            }
+
+        }
+        async function deleteRoute(e) {
+            await updateLength(e);
+
+            //removes layers associated with line and deletes text associated with those layers
+            map.removeLayer("route");
+            map.removeSource("route");
+            geojsonLine = "no";
+            map.removeLayer("routeBuffer");
+            map.removeSource("routeBuffer");
+
+            instructions.innerHTML = "<h2>Directions: </h2>"
+
+            deleteShopsWithin();
+            shopsStats.innerHTML = "";
+            elevationStats.innerHTML = "";
+            stats.innerHTML = "";
+            myChart.destroy();
+            myChart = "no";
+            //updatePlot();
+
+        }
+        //function called when new line is created or line is moved
+        async function onChange(e) { //e is the line? confirm this !!!
+
+            deleteShopsWithin();
+
+
+            if (map.getSource("routeBuffer")) { //if there's a layer, remove it, both parts
+                map.removeLayer("routeBuffer");
+                map.removeSource("routeBuffer")
+            }
+            await updateLength(e);
+            elevationsAlongLine = [];
+            //we run the changeShopLayer function here to resample the bounding box and account for possible zooming. I don't use on onZoom function because this would be time consuming. I instead assume that the maximum possible radius of buffer is within the current level.
+            changeShopLayer(document.getElementById("shops"));
+        }
+        async function changeShopLayer(e) {
+            //takes the choice of shop type and queries osm based on the choice. There is a lot of repeat code within the switch, but in trying to abstract the code more and make a function, I was having problems with the fetching so I opted to just use bad coding style.
+            var bounds = map.getBounds();
+            var shopType = document.getElementById("shops").value;
+            switch (shopType) {
+                case '':
+                    shopsStats.innerHTML = "";
+                    elevationStats.innerHTML = "";
+                    shopPoints = "no";
+
+                    break;
+                case 'Camp Sites':
+
+
+                    var link = `https://overpass-api.de/api/interpreter?data=[out:json][timeout:25];(node["tourism"="camp_pitch"](${bounds._sw.lat},${bounds._sw.lng},${bounds._ne.lat},${bounds._ne.lng});way["tourism"="camp_pitch"](${bounds._sw.lat},${bounds._sw.lng},${bounds._ne.lat},${bounds._ne.lng});relation["tourism"="camp_pitch"](${bounds._sw.lat},${bounds._sw.lng},${bounds._ne.lat},${bounds._ne.lng}););out%20center;>`
+                        //`https://overpass-api.de/api/interpreter?data=[out:json];(node["tourism"="camp_pitch"](${bounds._sw.lat},${bounds._sw.lng},${bounds._ne.lat},${bounds._ne.lng});way["tourism"="camp_pitch"](${bounds._sw.lat},${bounds._sw.lng},${bounds._ne.lat},${bounds._ne.lng});relation["tourism"="camp_pitch"](${bounds._sw.lat},${bounds._sw.lng},${bounds._ne.lat},${bounds._ne.lng}));out%20center;>`;                    //experimentally, I found that some shops were displayed as nodes, while others as ways, with somewhat minimal overlap. I did not account for overlap, though that would be a good addition for the future. I took the center of the way to give it coordinates to evaluate.
+                    //;area["tourism"="camp_site"](${bounds._sw.lat},${bounds._sw.lng},${bounds._ne.lat},${bounds._ne.lng});
+                    hi = link;
+                    shopPoints = await fetch(link.concat(";"), { method: "GET" });
+                    
+                    shopPoints = await shopPoints.json();
+                    
+                    break;
+                case 'Coffee Shops':
+
+
+                    var link = `https://overpass-api.de/api/interpreter?data=[out:json];(node["amenity"="cafe"](${bounds._sw.lat},${bounds._sw.lng},${bounds._ne.lat},${bounds._ne.lng});way["amenity"="cafe"](${bounds._sw.lat},${bounds._sw.lng},${bounds._ne.lat},${bounds._ne.lng}););out%20center;>
+`;
+
+                    shopPoints = await fetch(link.concat(";"), { method: "GET" });
+                    shopPoints = await shopPoints.json();
+
+                    break;
+                case 'Public Washrooms':
+                    var link = `https://overpass-api.de/api/interpreter?data=[out:json];(node["amenity"="toilets"](${bounds._sw.lat},${bounds._sw.lng},${bounds._ne.lat},${bounds._ne.lng});way["amenity"="toilets"](${bounds._sw.lat},${bounds._sw.lng},${bounds._ne.lat},${bounds._ne.lng}););out%20center;>
+`;
+
+                    shopPoints = await fetch(link.concat(";"), { method: "GET" });
+                    shopPoints = await shopPoints.json();
+                    break;
+                case 'Water Fountains':
+                    var link = `https://overpass-api.de/api/interpreter?data=[out:json];(node["amenity"="drinking_water"](${bounds._sw.lat},${bounds._sw.lng},${bounds._ne.lat},${bounds._ne.lng});way["amenity"="drinking_water"](${bounds._sw.lat},${bounds._sw.lng},${bounds._ne.lat},${bounds._ne.lng}););out%20center;>
+`;
+
+                    shopPoints = await fetch(link.concat(";"), { method: "GET" });
+                    shopPoints = await shopPoints.json();
+
+                    break;
+                    deault:
+                    shopPoints = "no";
+                    break;
+            }
+            deleteShopsWithin();
+            updatePlot();
+        }
+
+
+
+
+
+
+
+        //This function does most of the plotting after changes in the various interactive options, including buffering the line, finding the shops within the buffer, calculating the elevation profile and creating a chart, displaying the directions, and the route statistics. In hindisght it would have also been better practice to split this into multiple functions, but I did not think initally that these functionalities would be this complicated
+        async function updatePlot() {
+            if (geojsonLine != "no") {
+
+                //line buffer and plot it
+                var geojsonBuffer = turf.buffer(geojsonLine, radius);
+                if (!map.getSource("routeBuffer")) {
+
+
+                    map.addLayer({
+                        id: "routeBuffer",
+                        type: "fill",
+                        source: {
+                            type: "geojson",
+                            data: geojsonBuffer
+                        },
+
+                        paint: {
+                            "fill-color": "#00ffff",
+                            "fill-opacity": 0.5,
+                            "fill-outline-color": "blue"
+
+                        }
+                    }
+
+                    );
+                    map.moveLayer('routeBuffer', 'route');
+                }
+                //elevation plot (in researching online, the most common method of creating an elevation profile seemed to be discritizing the line and sampling the elevation at these points. This is what I do here)
+
+                //check elevation at distances defined below
+                if (elevationsAlongLine.length === 0) {
+                    //sample a max of 101 points (including endpoints) so we see which discretization is larger (ie results in less samplings)
+                    maxPointsToCheck = 100;
+                    var distanceChange = Math.max(0.2, turf.length(geojsonLine) / maxPointsToCheck);
+
+                    var distancesToCheck = []
+                    for (i = 0; i < turf.length(geojsonLine); i = i + distanceChange) {
+                        distancesToCheck.push(i);
+                    }
+                    distancesToCheck.push(turf.length(geojsonLine)); //adds last point to ensure line displayed is of the correct length.
+                    var elevationPoints = _getPointsToCheck(geojsonLine, distancesToCheck);
+                    
+                    //elevationPlot()
+                    let coords;
+
+
+                    for (var i = 0; i < elevationPoints.length; i++) {
+                        coords = elevationPoints[i].geometry.coordinates;
+
+                        //this is the reason the elevation profile is so slow. This was the simplest way to query the elevation that I could find that was free. For this service, you cannot do multiple points at once to my knowledge, causing a huge slow down. I know you can also sample elevation through the mapbox rbg tiles, but I got confused halfway through trying that.
+                        var link2 = `https://epqs.nationalmap.gov/v1/json?x=${coords[0]}&y=${coords[1]}&wkid=4326&units=Feet&includeDate=false`
+                        
+                        var elevationData = await fetch(link2, { method: "GET" });
+                        elevationData = await elevationData.json();
+                        
+                        elevationsAlongLine.push(elevationData.value)
+
+                    }
+
+
+                    //create xy data for elevation plot (distance, elevation)
+                    graphCoords = [];
+                    for (var i = 0; i < elevationsAlongLine.length; i++) {
+                        graphCoords.push([Math.floor(distancesToCheck[i] * 100) / 100, elevationsAlongLine[i]])
+
+                    }
+                }
+
+
+                //plot elevation chart using Chart.js
+
+                //set the min and max for the chart display
+                var plotMin = Math.round(Math.min(...elevationsAlongLine)) - 5;
+                var plotMax = Math.round(Math.max(...elevationsAlongLine)) + 5;
+
+                var ctx = document.getElementById("myChart1");
+                if (myChart != "no") {
+                    myChart.destroy();
+                }
+                myChart = new Chart(ctx, {
+
+                    options: {
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Elevation Across Route'
+                            },
+                            legend: {
+                                display: false
+                            },
+                        },
+                        scales: {
+                            x: {
+                                display: true,
+                                title: {
+                                    display: true,
+                                    text: 'Distance (km)',
+
+
+                                    padding: { top: 2, left: 0, right: 0, bottom: 0 }
+                                }
+                            },
+                            y: {
+                                min: plotMin,
+                                max: plotMax,
+                                display: true,
+                                title: {
+                                    display: true,
+                                    text: 'Elevation (m)',
+
+                                    padding: { top: 2, left: 0, right: 0, bottom: 0 }
+                                }
+                            }
+                        },
+                        responsive: true,
+                        maintainAspectRatio: false,
+                    },
+                    data: {
+
+                        datasets: [{
+                            type: 'scatter',
+                            label: "Elevation",
+                            data: graphCoords,
+                            backgroundColor: "white",
+                            pointRadius: 0,
+                            showLine: true,
+                            borderColor: "blue"
+
+                        }]
+                    }
+                });
+
+
+
+                //intersection of points and plot them
+                if (shopPoints != "no") { //only do this if you have a shop type selected
+                    var shopCoords = [];
+                    //I know this could also be done with a forEach method, but I find it easier to work with for loops
+                    for (var i = 0; i < shopPoints.elements.length; i++) {
+                        if (shopPoints.elements[i].type == "way") { //I included the center of the ways in the json output, but I have to differentiate between ways and nodes because the coordinates of the center are within the "center"
+                            shopCoords.push([shopPoints.elements[i].center.lon, shopPoints.elements[i].center.lat]);
+                        } else {
+                            shopCoords.push([shopPoints.elements[i].lon, shopPoints.elements[i].lat]);
+                        }
+                    }
+                    //it it would be nice to have a way to include name data within the turf points, but I wasn't sure if that was possible.
+                    var turfPoints = turf.points(shopCoords);
+                    var shopsWithin = turf.pointsWithinPolygon(turfPoints, geojsonBuffer);
+                    map.addLayer({
+                        id: "shopsWithin",
+                        type: "circle", //maybe do symbol with custom symbology depending on shop type (ie icons and such)
+                        source: {
+                            type: "geojson",
+                            data: shopsWithin
+                        },
+                        paint: {
+                            "circle-color": "red",
+                            "circle-radius": 5,
+                            "circle-stroke-width": 1,
+                            "circle-stroke-color": "#fff",
+                        }
+                    });
+                    
+                    //for each shop, slice the line at the closest point to it on the line and then calculate the length of that line (to get locations of shops for elevation profile)
+                    var shopDistancesOnLine = [];
+                    for (var i = 0; i < shopsWithin.features.length; i++) {
+                        tempLine = turf.lineSlice(turf.point(geojsonLine.geometry.coordinates[0]), shopsWithin.features[i], geojsonLine);
+                        tempLength = turf.length(tempLine);
+                        if (tempLength > turf.length(geojsonLine)) {
+                            tempLength = turf.length(geojsonLine); //accounts for if shops are right at the endpoints, causing problems
+                        }
+
+                        shopDistancesOnLine.push(turf.length(tempLine));
+
+                        myChart.data.datasets.push({
+                            type: 'scatter',
+                            label: "Shop",
+                            data: [[tempLength, plotMin], [tempLength, plotMax]], //For each shop, I create a dataset to add to the chart. This dataset consists of 2 points with x coordinates
+                            // at the specifed distance along the line and y coords of the min and max values of the plot as to give the appearence of a vertical line.
+                            backgroundColor: "white",
+                            pointRadius: 0,
+                            showLine: true,
+                            borderColor: "red"
+
+                        });
+                        //create array of points closest to shops on line to display along elevation profile (Given that the points are not on the line, when we draw the elevation plot, this is the best way to approximate their location)                     //shopCoordsOnLine.push(turf.nearestPointOnLine(geojsonLine,shopsWithin.features[i]).geometry.coordinates );
+                    }
+
+                    myChart.update();
+
+
+
+                    //add number of shops to stats page
+                    var string = document.getElementById("shops").value;
+
+                    shopsStats.innerHTML = `<br> <p><strong> Number of ${string}: ${shopsWithin.features.length} </p></strong>`
+
+
+                }
+
+
+
+
+
+
+                //summary stats for elevation
+                //calculate approximate elevation gain/loss based on discretization (the finer the discretization, the smaller the changes of elevation that will be captured by this method.)
+
+                var elevationGain = 0;
+                var elevationLoss = 0;
+                let elevationChange;
+
+                for (i = 0; i < elevationsAlongLine.length - 1; i++) {
+                    elevationChange = elevationsAlongLine[i + 1] - elevationsAlongLine[i];
+
+                    if (elevationChange > 0) {
+                        elevationGain += elevationChange;
+                    } else {
+                        elevationLoss += elevationChange;
+                    }
+
+                }
+
+                elevationStats.innerHTML = `<br> <p><strong> Elevation Gain: ${Math.round(elevationGain * 10) / 10} m <br><br>Elevtion Loss: ${-Math.round(elevationLoss * 10) / 10} m </p></strong>`
+
+                //directions for route, provided by the direction api
+                const instructions = document.getElementById('instructions');
+                /*const steps = leg.steps;
+
+                let tripInstructions = '';
+                for (const step of steps) {
+                    tripInstructions += `<li>${step.maneuver.instruction}  (${Math.floor(step.distance / 10) / 100} km)</li>`;
+                }
+                instructions.innerHTML = `<h2>Directions: </h2><ol>${tripInstructions}</ol>`;
+                */
+                const answer = document.getElementById('stats');
+                const length = turf.length(geojsonLine);
+                // only display to two decimal places
+
+                const rounded_distance = Math.round(length * 100) / 100;
+                answer.innerHTML = `<p><strong>Length: ${rounded_distance} km</strong></p> <br>`;
+            }
+        }
+
+
+
+        //points to query elevation at
+        function _getPointsToCheck(lineString, distancesToCheck) {
+            let points = [];
+            distancesToCheck.forEach(function (distance) {
+                let feature = turf.along(lineString, distance, { units: "kilometers" });
+                feature.properties.distanceAlongLine = distance * 1000;
+                points.push(feature);
+            });
+            return points;
+        }
+
+        //displays the name of the place if there is one when you click on the item
+        map.on("click", "shopsWithin", (e) => {
+            const coordinates = e.features[0].geometry.coordinates.slice();
+
+
+            var eps = 0.00001; //this value I got by checking a few coordinates that in theory should be equal. They were equal up to one more decimal place, so to play it safe, I chose this value of epsilon.
+            let shop;
+            let shopPoint = "no";
+
+            //the find function would accomplish the same goal, but it wasn't working originally, though I now know that's because the coords aren't exactly equal
+            for (var i = 0; i < shopPoints.elements.length; i++) {
+                shop = shopPoints.elements[i];
+                if (shop.type == "node") { //the coordinates appear to not be quite equal between changing to turf points and their original osm form so I just see if they're very close (within epsilon of each other)
+                    if (Math.abs(shop.lon - coordinates[0]) < eps && Math.abs(shop.lat - coordinates[1]) < eps) {
+                        shopPoint = shop
+                        i = shopPoints.elements.length;
+                    }
+                } else if (shop.type == "way") {
+                    if (Math.abs(shop.center.lon - coordinates[0]) < eps && Math.abs(shop.center.lat - coordinates[1]) < eps) {
+                        shopPoint = shop
+                        i = shopPoints.elements.length;
+                    }
+                }
+            }
+
+
+            var str = "None"
+            if (shopPoint !== "no" && shopPoint.tags.name != null) { //if for some reason no point was found, the not "no" requirement ensures that there isn't an error in reading the tags
+                str = shopPoint.tags.name
+            }
+            //allows reader to view the name of the shop. Most of the washrooms and water fountains don't have names, unfortunately.
+            new mapboxgl.Popup()
+                .setLngLat(coordinates)
+                .setHTML(`Name: ${str}`)
+                .addTo(map);
+        });
+        //just to get rid of some repitition within the code
+        function deleteShopsWithin() {
+            if (map.getSource("shopsWithin")) {
+
+                map.removeLayer('shopsWithin');
+                map.removeSource("shopsWithin");
+            }
+        }
+
+        //changes cursor when you're over a point to indicate that it is clickable
+        map.on("mouseenter", "shopsWithin", () => {
+            map.getCanvas().style.cursor = "pointer";
+        });
+        map.on("mouseleave", "shopsWithin", () => {
+            map.getCanvas().style.cursor = "";
+        });
+
+
+        
+
+
+    </script>
+</body>
+</html>
+
+ 
+      </p>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrapper">
+      <!-- <p class="text-xs text-gray-500 sm:ml-4 sm:pl-4 sm:border-l-2 sm:border-gray-200 sm:py-2 sm:mt-0 mt-4"><a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.</p> -->
+      <a href="https://geog.ubc.ca/" class="footer-link">A UBC Geography Project</a>
+    
+    </div>
+  </footer>
+
+</body>
+
+</html>
